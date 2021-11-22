@@ -1,11 +1,4 @@
-import {
-    BadRequestException,
-    Body,
-    Controller,
-    Post,
-    UsePipes,
-    ValidationPipe,
-} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import {AuthService} from './auth.service';
 import {User} from './entities/user.entity';
 import {AuthDto} from './dto/auth.dto';
@@ -22,9 +15,7 @@ export class AuthController {
 
         // If a user with such a name already exists
         if (user) {
-            throw new BadRequestException(
-                'A user with such a name already exists',
-            );
+            throw new BadRequestException('A user with such a name already exists');
         }
 
         return this.authService.createUser(body);

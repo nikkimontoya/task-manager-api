@@ -1,9 +1,9 @@
-import {Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import {AuthDto} from './dto/auth.dto';
 import {Repository} from 'typeorm';
 import {User} from './entities/user.entity';
 import {InjectRepository} from '@nestjs/typeorm';
-import {genSaltSync, hashSync} from 'bcryptjs';
+import {genSalt, hash, compare} from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -13,10 +13,10 @@ export class AuthService {
     ) {}
 
     async createUser(dto: AuthDto): Promise<User> {
-        const salt = genSaltSync(10);
+        const salt = await genSalt(10);
         const newUser = this.userRepository.create({
             username: dto.username,
-            passwordHash: hashSync(dto.password, salt),
+            passwordHash: await hash(dto.password, salt),
         });
 
         return this.userRepository.save(newUser);
@@ -25,4 +25,22 @@ export class AuthService {
     async findUser(username: string): Promise<User | undefined> {
         return this.userRepository.findOne({username});
     }
+
+    async validateUser(username: string, password: string) {
+        const user = await this.findUser(username);
+
+        // If there is no such a user
+        if (!user) {
+            throw new BadRequestException('Wrong credentials');
+        }
+
+        const isCorrectPassword = await compare(password, user.passwordHash);
+        if (!isCorrectPassword) {
+            throw new BadRequestException('Wrong credentials');
+        }
+
+        return user.username;
+    }
+
+    async login():
 }

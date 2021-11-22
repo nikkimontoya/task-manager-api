@@ -20,13 +20,13 @@ import {AuthModule} from './auth/auth.module';
                     password: configService.get('POSTGRES_PASSWORD'),
                     database: 'postgres',
                     autoLoadEntities: true,
-                    synchronize: true,
+                    synchronize: true
                 };
-            },
+            }
         }),
-        AuthModule,
+        AuthModule
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService]
 })
 export class AppModule {}

@@ -12,14 +12,14 @@ export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
-        private readonly jwtService: JwtService,
+        private readonly jwtService: JwtService
     ) {}
 
     async createUser(dto: AuthDto): Promise<User> {
         const salt = await genSalt(10);
         const newUser = this.userRepository.create({
             username: dto.username,
-            passwordHash: await hash(dto.password, salt),
+            passwordHash: await hash(dto.password, salt)
         });
 
         return this.userRepository.save(newUser);
@@ -49,7 +49,7 @@ export class AuthService {
         const payload = {username};
 
         return {
-            accessToken: await this.jwtService.signAsync(payload),
+            accessToken: await this.jwtService.signAsync(payload)
         };
     }
 }

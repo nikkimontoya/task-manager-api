@@ -4,12 +4,15 @@ import {Repository} from 'typeorm';
 import {User} from './entities/user.entity';
 import {InjectRepository} from '@nestjs/typeorm';
 import {genSalt, hash, compare} from 'bcryptjs';
+import {JwtService} from '@nestjs/jwt';
+import {LoginResponseDto} from './dto/login-response.dto';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        private readonly jwtService: JwtService
     ) {}
 
     async createUser(dto: AuthDto): Promise<User> {
@@ -42,5 +45,11 @@ export class AuthService {
         return user.username;
     }
 
-    async login():
+    async login(username: string): Promise<LoginResponseDto> {
+        const payload = {username};
+
+        return {
+            accessToken: await this.jwtService.signAsync(payload),
+        };
+    }
 }

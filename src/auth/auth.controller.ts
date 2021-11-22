@@ -9,6 +9,7 @@ import {
 import {AuthService} from './auth.service';
 import {User} from './entities/user.entity';
 import {AuthDto} from './dto/auth.dto';
+import {LoginResponseDto} from './dto/login-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -31,8 +32,8 @@ export class AuthController {
 
     @UsePipes(new ValidationPipe())
     @Post('login')
-    async login(@Body() body: AuthDto): Promise<User> {
+    async login(@Body() body: AuthDto): Promise<LoginResponseDto> {
         const username = await this.authService.validateUser(body.username, body.password);
-
+        return this.authService.login(username);
     }
 }

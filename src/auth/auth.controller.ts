@@ -1,8 +1,8 @@
-import {BadRequestException, Body, Controller, Post, UsePipes, ValidationPipe} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Post, UsePipes, ValidationPipe, Res} from '@nestjs/common';
+import {Response} from 'express';
 import {AuthService} from './auth.service';
 import {User} from './entities/user.entity';
 import {AuthDto} from './dto/auth.dto';
-import {LoginResponseDto} from './dto/login-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,7 +10,10 @@ export class AuthController {
 
     @UsePipes(new ValidationPipe())
     @Post('register')
-    async register(@Body() body: AuthDto): Promise<User> {
+    async register(
+        @Body() body: AuthDto,
+        @Res({passthrough: true}) response: Response
+    ): Promise<Omit<User, 'passwordHash'>> {
         const user = await this.authService.findUser(body.username);
 
         // If a user with such a name already exists
@@ -18,13 +21,30 @@ export class AuthController {
             throw new BadRequestException('A user with such a name already exists');
         }
 
-        return this.authService.createUser(body);
+        const {username, id} = await this.authService.createUser(body);
+        const {accessToken} = await this.authService.login(username);
+
+        response.cookie('authToken', accessToken, {httpOnly: true});
+
+        return {
+            id: id,
+            username: username
+        };
     }
 
     @UsePipes(new ValidationPipe())
     @Post('login')
-    async login(@Body() body: AuthDto): Promise<LoginResponseDto> {
-        const username = await this.authService.validateUser(body.username, body.password);
-        return this.authService.login(username);
+    async login(
+        @Body() body: AuthDto,
+        @Res({passthrough: true}) response: Response
+    ): Promise<Omit<User, 'passwordHash'>> {
+        const user = await this.authService.validateUser(body.username, body.password);
+        const {accessToken} = await this.authService.login(user.username);
+        response.cookie('authToken', accessToken, {httpOnly: true});
+
+        return {
+            id: user.id,
+            username: user.username
+        };
     }
 }

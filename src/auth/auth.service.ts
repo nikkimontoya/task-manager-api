@@ -29,7 +29,7 @@ export class AuthService {
         return this.userRepository.findOne({username});
     }
 
-    async validateUser(username: string, password: string) {
+    async validateUser(username: string, password: string): Promise<User> {
         const user = await this.findUser(username);
 
         // If there is no such a user
@@ -42,7 +42,7 @@ export class AuthService {
             throw new BadRequestException('Wrong credentials');
         }
 
-        return user.username;
+        return user;
     }
 
     async login(username: string): Promise<LoginResponseDto> {

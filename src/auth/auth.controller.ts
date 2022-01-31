@@ -1,4 +1,4 @@
-import {BadRequestException, Body, Controller, Post, UsePipes, ValidationPipe, Res} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Post, UsePipes, ValidationPipe, Res, Get} from '@nestjs/common';
 import {Response} from 'express';
 import {AuthService} from './auth.service';
 import {User} from './entities/user.entity';
@@ -46,5 +46,15 @@ export class AuthController {
             id: user.id,
             username: user.username
         };
+    }
+
+    @Get('users')
+    async getAll(): Promise<Omit<User, 'passwordHash'>[]> {
+        return this.authService.getAll().then((users) =>
+            users.map(({id, username}) => ({
+                id,
+                username
+            }))
+        );
     }
 }

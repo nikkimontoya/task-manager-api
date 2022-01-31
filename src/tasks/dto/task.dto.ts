@@ -3,4 +3,5 @@ export class TaskDto {
     body: string;
     authorId: number;
     executorId: number;
+    deadlineDate: Date;
 }

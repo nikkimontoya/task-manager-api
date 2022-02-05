@@ -37,14 +37,15 @@ export class AuthController {
     async login(
         @Body() body: AuthDto,
         @Res({passthrough: true}) response: Response
-    ): Promise<Omit<User, 'passwordHash'>> {
+    ): Promise<Omit<User, 'passwordHash'> & {accessToken: string}> {
         const user = await this.authService.validateUser(body.username, body.password);
         const {accessToken} = await this.authService.login(user.username);
-        response.cookie('authToken', accessToken, {httpOnly: true});
+        response.cookie('authToken', accessToken);
 
         return {
             id: user.id,
-            username: user.username
+            username: user.username,
+            accessToken
         };
     }
 

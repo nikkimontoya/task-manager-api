@@ -13,9 +13,15 @@ export class Task {
     body: string;
 
     @ManyToOne(() => User)
+    author: User;
+
+    @Column()
     authorId: number;
 
     @ManyToOne(() => User)
+    executor: User;
+
+    @Column()
     executorId: number;
 
     @Column()

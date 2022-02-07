@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import {DeleteResult, Repository} from 'typeorm';
 import {Task} from './entities/task.entity';
 import {InjectRepository} from '@nestjs/typeorm';
@@ -17,6 +17,16 @@ export class TasksService {
         });
 
         return this.taskRepository.save(newTask);
+    }
+
+    async update(id: number, task: TaskDto): Promise<Task> {
+        const updatedTask = await this.taskRepository.preload({id, ...task});
+
+        if (!updatedTask) {
+            throw new BadRequestException(`Task with id ${id} is not found`);
+        }
+
+        return this.taskRepository.save(updatedTask);
     }
 
     async getAll(): Promise<Task[]> {

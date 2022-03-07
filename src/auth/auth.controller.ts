@@ -1,7 +1,7 @@
 import {BadRequestException, Body, Controller, Post, UsePipes, ValidationPipe, Res, Get} from '@nestjs/common';
 import {Response} from 'express';
 import {UserService} from '../user/user.service';
-import {User} from './entities/user.entity';
+import {User} from '../user/entities/user.entity';
 import {AuthDto} from './dto/auth.dto';
 import {AuthService} from './auth.service';
 

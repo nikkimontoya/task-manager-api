@@ -4,4 +4,5 @@ export class CreateTaskDto {
     authorId: number;
     executorId: number;
     deadlineDate: Date;
+    projectId: number;
 }

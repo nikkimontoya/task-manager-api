@@ -2,7 +2,7 @@ import {PassportStrategy} from '@nestjs/passport';
 import {ExtractJwt, Strategy} from 'passport-jwt';
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
-import {AuthDto} from '../dto/auth.dto';
+import {RegisterDto} from '../dto/register.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate({username}: Pick<AuthDto, 'username'>) {
-        return username;
+    async validate({email}: Pick<RegisterDto, 'email'>) {
+        return email;
     }
 }

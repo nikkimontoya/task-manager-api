@@ -1,8 +1,18 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {User} from '../../auth/entities/user.entity';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm';
+import {User} from '../../user/entities/user.entity';
+import {Project} from '../../projects/entities/project.entity';
+import {JoinColumn} from 'typeorm';
 
 @Entity()
-export class Task {
+export class Task extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -24,12 +34,21 @@ export class Task {
     @Column()
     executorId: number;
 
-    @Column()
+    @CreateDateColumn()
     createdAt: Date;
 
-    @Column()
+    @UpdateDateColumn()
     updatedAt: Date;
 
-    @Column()
+    @Column({nullable: true})
     deadlineDate: Date;
+
+    @ManyToOne(() => Project, (project) => project.tasks)
+    @JoinColumn({
+        name: 'projectId'
+    })
+    project: Project;
+
+    @Column()
+    projectId: number;
 }

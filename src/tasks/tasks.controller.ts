@@ -1,12 +1,13 @@
-import {Body, Controller, Post, Get, Param, Delete, UseGuards, Put, NotFoundException} from '@nestjs/common';
+import {Body, Controller, Post, Get, Param, Delete, UseGuards, Put, NotFoundException, Query} from '@nestjs/common';
 import {CreateTaskDto} from './dto/create-task.dto';
 import {TasksService} from './tasks.service';
 import {JwtGuard} from '../auth/guards/jwt.guard';
 import {UserService} from '../user/user.service';
 import {Task} from './entities/task.entity';
-import {UserInterface} from '../user/types/user.interface';
 import {TaskDto} from './dto/task.dto';
 import {TasksDto} from './dto/tasks.dto';
+import {UserInterface} from '../user/types/user.interface';
+import {TaskFilterInterface} from './types/task-filter.interface';
 
 @Controller('tasks')
 export class TasksController {
@@ -26,8 +27,15 @@ export class TasksController {
 
     @Get()
     @UseGuards(JwtGuard)
-    async getAll(): Promise<TasksDto> {
-        const tasks = await this.taskService.getAll();
+    // Todo make query validation
+    async getAll(@Query() query: TaskFilterInterface): Promise<TasksDto> {
+        let tasks;
+        if (query.authorId || query.executorId || query.projectId) {
+            tasks = await this.taskService.getByFilter(query);
+        } else {
+            tasks = await this.taskService.getAll();
+        }
+
         const users = await this.getUsersForTasks(tasks);
 
         return {
@@ -70,6 +78,11 @@ export class TasksController {
             return acc;
         }, new Set<number>());
 
-        return await this.userService.getByIds(Array.from(usersToLoad));
+        return (await this.userService.getByIds(Array.from(usersToLoad), [
+            'id',
+            'firstName',
+            'lastName',
+            'email'
+        ])) as UserInterface[];
     }
 }

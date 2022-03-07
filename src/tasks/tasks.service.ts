@@ -1,8 +1,9 @@
 import {BadRequestException, Injectable} from '@nestjs/common';
-import {DeleteResult, Repository} from 'typeorm';
+import {DeleteResult, FindManyOptions, Repository} from 'typeorm';
 import {Task} from './entities/task.entity';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreateTaskDto} from './dto/create-task.dto';
+import {FindConditions} from 'typeorm/find-options/FindConditions';
 
 @Injectable()
 export class TasksService {
@@ -29,6 +30,10 @@ export class TasksService {
 
     async getById(id: number): Promise<Task | undefined> {
         return this.taskRepository.findOne({id});
+    }
+
+    async getByFilter(filter: FindConditions<Task>): Promise<Task[]> {
+        return this.taskRepository.find(filter);
     }
 
     async deleteById(id: number): Promise<DeleteResult> {

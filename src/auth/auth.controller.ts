@@ -12,7 +12,10 @@ export class AuthController {
 
     @UsePipes(new ValidationPipe())
     @Post('register')
-    async register(@Body() body: RegisterDto, @Res({passthrough: true}) response: Response): Promise<Partial<User>> {
+    async register(
+        @Body() body: RegisterDto,
+        @Res({passthrough: true}) response: Response
+    ): Promise<Partial<User> & {accessToken: string}> {
         const user = await this.userService.findUser(body.email);
 
         // If a user with such a name already exists
@@ -20,14 +23,24 @@ export class AuthController {
             throw new BadRequestException('A user with such a name already exists');
         }
 
-        const {email, id} = await this.userService.createUser(body);
+        const {email, id, firstName, lastName} = await this.userService.createUser(body);
         const {accessToken} = await this.authService.login(email);
 
-        response.cookie('authToken', accessToken, {httpOnly: true});
+        response.cookie(
+            'user',
+            JSON.stringify({
+                id,
+                accessToken
+            }),
+            {httpOnly: true}
+        );
 
         return {
-            id: id,
-            email: email
+            id,
+            email,
+            firstName,
+            lastName,
+            accessToken
         };
     }
 
@@ -37,13 +50,22 @@ export class AuthController {
         @Body() body: LoginDto,
         @Res({passthrough: true}) response: Response
     ): Promise<Partial<User> & {accessToken: string}> {
-        const user = await this.userService.validateUser(body.email, body.password);
-        const {accessToken} = await this.authService.login(user.email);
-        response.cookie('authToken', accessToken);
+        const {email, id, firstName, lastName} = await this.userService.validateUser(body.email, body.password);
+        const {accessToken} = await this.authService.login(email);
+        response.cookie(
+            'user',
+            JSON.stringify({
+                id,
+                accessToken
+            }),
+            {httpOnly: true}
+        );
 
         return {
-            id: user.id,
-            email: user.email,
+            id,
+            email,
+            firstName,
+            lastName,
             accessToken
         };
     }

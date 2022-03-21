@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Post, Query, UseGuards} from '@nestjs/common';
 import {Project} from './entities/project.entity';
 import {ProjectsService} from './projects.service';
 import {CreateProjectDto} from './dto/create-project.dto';
@@ -15,7 +15,8 @@ export class ProjectsController {
     }
 
     @Get()
-    async getAll(): Promise<Project[]> {
-        return this.projectsService.getAll();
+    // TODO add query validation
+    async getAll(@Query() query: {administratorId: number}): Promise<Project[]> {
+        return this.projectsService.getAll(query);
     }
 }

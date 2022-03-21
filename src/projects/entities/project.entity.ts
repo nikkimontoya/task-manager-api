@@ -43,6 +43,9 @@ export class Project extends BaseEntity {
     @JoinColumn({name: 'administratorId'})
     administrator: User;
 
+    @Column()
+    administratorId: number;
+
     @CreateDateColumn()
     createdAt: Date;
 

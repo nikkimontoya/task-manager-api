@@ -8,10 +8,16 @@ import {TaskDto} from './dto/task.dto';
 import {TasksDto} from './dto/tasks.dto';
 import {UserInterface} from '../user/types/user.interface';
 import {TaskFilterInterface} from './types/task-filter.interface';
+import {Project} from '../projects/entities/project.entity';
+import {ProjectsService} from '../projects/projects.service';
 
 @Controller('tasks')
 export class TasksController {
-    constructor(private readonly taskService: TasksService, private readonly userService: UserService) {}
+    constructor(
+        private readonly taskService: TasksService,
+        private readonly userService: UserService,
+        private readonly projectService: ProjectsService
+    ) {}
 
     @Post()
     @UseGuards(JwtGuard)
@@ -36,12 +42,13 @@ export class TasksController {
             tasks = await this.taskService.getAll();
         }
 
-        const users = await this.getUsersForTasks(tasks);
+        const [users, projects] = await Promise.all([this.getUsersForTasks(tasks), this.getProjectsForTasks(tasks)]);
 
         return {
             data: tasks,
             included: {
-                users
+                users,
+                projects
             }
         };
     }
@@ -55,12 +62,13 @@ export class TasksController {
             throw new NotFoundException();
         }
 
-        const users = await this.getUsersForTasks([task]);
+        const [users, projects] = await Promise.all([this.getUsersForTasks([task]), this.getProjectsForTasks([task])]);
 
         return {
             data: task,
             included: {
-                users
+                users,
+                projects
             }
         };
     }
@@ -84,5 +92,14 @@ export class TasksController {
             'lastName',
             'email'
         ])) as UserInterface[];
+    }
+
+    private async getProjectsForTasks(tasks: Task[]): Promise<Project[]> {
+        const projectsToLoad: Set<number> = tasks.reduce((acc, curr) => {
+            acc.add(curr.projectId);
+            return acc;
+        }, new Set<number>());
+
+        return await this.projectService.getByIds(Array.from(projectsToLoad));
     }
 }

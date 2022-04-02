@@ -48,4 +48,8 @@ export class ProjectsService {
     async getById(id: number): Promise<Project | undefined> {
         return this.projectRepository.findOne({id});
     }
+
+    async getByIds(ids: number[]): Promise<Project[]> {
+        return this.projectRepository.findByIds(ids);
+    }
 }

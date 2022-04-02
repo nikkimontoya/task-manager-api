@@ -72,11 +72,6 @@ export class AuthController {
 
     @Get('users')
     async getAll(): Promise<Partial<User>[]> {
-        return this.userService.getAll(['id', 'firstName', 'lastName', 'email']).then((users) =>
-            users.map(({id, email}) => ({
-                id,
-                email
-            }))
-        );
+        return this.userService.getAll(['id', 'firstName', 'lastName', 'email']);
     }
 }

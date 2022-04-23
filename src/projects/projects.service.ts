@@ -24,7 +24,7 @@ export class ProjectsService {
             throw new NotFoundException(`User with id ${projectDto.administrator} not found`);
         }
 
-        // If there is an non-existent user in participants, throw an exception
+        // If there is a non-existent user in participants, throw an exception
         projectDto.participants.forEach((participant: number) => {
             if (!users.find((user) => user.id === participant)) {
                 throw new NotFoundException(`User with id ${participant} not found`);
@@ -46,7 +46,7 @@ export class ProjectsService {
     }
 
     async getById(id: number): Promise<Project | undefined> {
-        return this.projectRepository.findOne({id});
+        return this.projectRepository.findOne({id}, {relations: ['users', 'tasks']});
     }
 
     async getByIds(ids: number[]): Promise<Project[]> {

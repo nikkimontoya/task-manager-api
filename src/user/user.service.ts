@@ -34,6 +34,10 @@ export class UserService {
         return this.userRepository.findByIds(ids, fields ? {select: fields} : {});
     }
 
+    async getById(id: number): Promise<User | undefined> {
+        return this.userRepository.findOne({id});
+    }
+
     async findUser(email: string): Promise<User | undefined> {
         return this.userRepository.findOne({email});
     }

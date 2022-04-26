@@ -25,7 +25,7 @@ export class TasksService {
     }
 
     async getAll(): Promise<Task[]> {
-        return this.taskRepository.find();
+        return this.taskRepository.find({relations: ['project']});
     }
 
     async getById(id: number): Promise<Task | undefined> {

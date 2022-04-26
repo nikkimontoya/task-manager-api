@@ -42,7 +42,7 @@ export class ProjectsService {
     }
 
     async getAll(params?: FindConditions<Project>): Promise<Project[]> {
-        return this.projectRepository.find(params);
+        return this.projectRepository.find({...params, relations: ['users', 'tasks']});
     }
 
     async getById(id: number): Promise<Project | undefined> {

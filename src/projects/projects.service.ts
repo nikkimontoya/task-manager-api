@@ -50,6 +50,6 @@ export class ProjectsService {
     }
 
     async getByIds(ids: number[]): Promise<Project[]> {
-        return this.projectRepository.findByIds(ids);
+        return this.projectRepository.findByIds(ids, {relations: ['users', 'tasks']});
     }
 }

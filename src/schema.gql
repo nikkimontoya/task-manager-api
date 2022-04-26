@@ -38,5 +38,5 @@ type Project {
 type Query {
   users(ids: [ID!]): [User!]!
   tasks: [Task!]!
-  projects: [Project!]!
+  projects(ids: [ID!]): [Project!]!
 }

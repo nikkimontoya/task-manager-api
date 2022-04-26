@@ -1,4 +1,4 @@
-import {Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
+import {Args, ID, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {Project} from './models/project.model';
 import {Project as ProjectEntity} from './entities/project.entity';
 import {ProjectsService} from './projects.service';
@@ -10,7 +10,11 @@ export class ProjectsResolver {
     constructor(private projectService: ProjectsService, private userService: UserService) {}
 
     @Query((returns) => [Project])
-    async projects() {
+    async projects(@Args('ids', {type: () => [ID], nullable: true}) ids?: number[]) {
+        if (ids) {
+            return this.projectService.getByIds(ids);
+        }
+
         return this.projectService.getAll();
     }
 

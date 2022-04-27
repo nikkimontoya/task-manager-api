@@ -29,7 +29,11 @@ export class TasksService {
     }
 
     async getById(id: number): Promise<Task | undefined> {
-        return this.taskRepository.findOne({id});
+        return this.taskRepository.findOne({id}, {relations: ['project']});
+    }
+
+    async getByIds(ids: number[]): Promise<Task[]> {
+        return this.taskRepository.findByIds(ids, {relations: ['project']});
     }
 
     async getByFilter(filter: FindConditions<Task>): Promise<Task[]> {

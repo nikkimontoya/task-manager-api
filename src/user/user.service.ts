@@ -26,12 +26,12 @@ export class UserService {
         return user;
     }
 
-    async getAll(fields?: (keyof User)[]): Promise<Partial<User>[]> {
-        return this.userRepository.find(fields ? {select: fields} : {});
+    async getAll(): Promise<Partial<User>[]> {
+        return this.userRepository.find();
     }
 
-    async getByIds(ids: number[], fields?: (keyof User)[]): Promise<Partial<User>[]> {
-        return this.userRepository.findByIds(ids, fields ? {select: fields} : {});
+    async getByIds(ids: number[]): Promise<Partial<User>[]> {
+        return this.userRepository.findByIds(ids);
     }
 
     async getById(id: number): Promise<User | undefined> {

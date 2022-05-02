@@ -1,4 +1,4 @@
-import {Args, ID, Query, Resolver} from '@nestjs/graphql';
+import {Args, ID, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {User} from './models/user.model';
 import {UserService} from './user.service';
 
@@ -13,5 +13,10 @@ export class UserResolver {
         }
 
         return this.userService.getAll();
+    }
+
+    @ResolveField()
+    async fullName(@Parent() user: User) {
+        return `${user.firstName} ${user.lastName}`;
     }
 }

@@ -4,7 +4,6 @@ import {TasksService} from './tasks.service';
 import {UserService} from '../user/user.service';
 import {TaskInterface} from './types/task.interface';
 import {User} from '../user/entities/user.entity';
-import {CreateTaskDto} from './dto/create-task.dto';
 import {TaskInput} from './models/task.input';
 
 @Resolver((of: unknown) => Task)

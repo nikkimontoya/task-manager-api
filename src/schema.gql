@@ -7,6 +7,15 @@ type User {
   email: String!
   firstName: String!
   lastName: String!
+  fullName: String!
+}
+
+type Login {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  accessToken: String!
 }
 
 type Task {
@@ -36,6 +45,7 @@ type Project {
 }
 
 type Query {
+  login(email: String!, password: String!): Login!
   users(ids: [ID!]): [User!]!
   tasks(ids: [ID!]): [Task!]!
   projects(ids: [ID!]): [Project!]!

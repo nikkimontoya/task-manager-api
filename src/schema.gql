@@ -52,7 +52,15 @@ type Query {
 }
 
 type Mutation {
+  register(data: RegisterInput!): Login!
   addTask(task: TaskInput!): Task!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
 }
 
 input TaskInput {

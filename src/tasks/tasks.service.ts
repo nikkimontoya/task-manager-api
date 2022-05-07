@@ -25,15 +25,15 @@ export class TasksService {
     }
 
     async getAll(): Promise<Task[]> {
-        return this.taskRepository.find({relations: ['project']});
+        return this.taskRepository.find();
     }
 
     async getById(id: number): Promise<Task | undefined> {
-        return this.taskRepository.findOne({id}, {relations: ['project']});
+        return this.taskRepository.findOne({id});
     }
 
     async getByIds(ids: number[]): Promise<Task[]> {
-        return this.taskRepository.findByIds(ids, {relations: ['project']});
+        return this.taskRepository.findByIds(ids);
     }
 
     async getByFilter(filter: FindConditions<Task>): Promise<Task[]> {

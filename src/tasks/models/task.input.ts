@@ -1,4 +1,4 @@
-import {Field, GraphQLISODateTime, InputType, Int} from '@nestjs/graphql';
+import {Field, GraphQLISODateTime, ID, InputType, Int} from '@nestjs/graphql';
 
 @InputType()
 export class TaskInput {
@@ -8,15 +8,15 @@ export class TaskInput {
     @Field()
     body: string;
 
-    @Field((type) => Int)
+    @Field((type) => ID)
     authorId: number;
 
-    @Field((type) => Int)
+    @Field((type) => ID)
     executorId: number;
 
     @Field((type) => GraphQLISODateTime, {nullable: true})
     deadlineDate: Date;
 
-    @Field((type) => Int)
+    @Field((type) => ID)
     projectId: number;
 }

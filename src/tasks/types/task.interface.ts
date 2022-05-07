@@ -4,5 +4,6 @@ export interface TaskInterface {
     body: string;
     authorId: number;
     executorId: number;
+    projectId: number;
     deadlineDate: Date;
 }

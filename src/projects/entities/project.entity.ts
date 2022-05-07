@@ -8,6 +8,7 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
+    RelationId,
     UpdateDateColumn
 } from 'typeorm';
 import {Task} from '../../tasks/entities/task.entity';
@@ -25,6 +26,9 @@ export class Project extends BaseEntity {
     @OneToMany(() => Task, (task) => task.project)
     tasks: Task[];
 
+    @RelationId((project: Project) => project.tasks)
+    taskIds: number[];
+
     @ManyToMany(() => User)
     @JoinTable({
         name: 'projects_users',
@@ -38,6 +42,9 @@ export class Project extends BaseEntity {
         }
     })
     users: User[];
+
+    @RelationId((project: Project) => project.users)
+    userIds: number[];
 
     @ManyToOne(() => User, (user) => user.administratedProjects)
     @JoinColumn({name: 'administratorId'})

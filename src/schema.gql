@@ -54,6 +54,7 @@ type Query {
 type Mutation {
   register(data: RegisterInput!): Login!
   addTask(task: TaskInput!): Task!
+  editTask(id: ID!, task: TaskInput!): Task!
 }
 
 input RegisterInput {
@@ -66,8 +67,8 @@ input RegisterInput {
 input TaskInput {
   title: String!
   body: String!
-  authorId: Int!
-  executorId: Int!
+  authorId: ID!
+  executorId: ID!
   deadlineDate: DateTime
-  projectId: Int!
+  projectId: ID!
 }

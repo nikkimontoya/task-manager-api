@@ -5,7 +5,6 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {CreateProjectDto} from './dto/create-project.dto';
 import {UserService} from '../user/user.service';
 import {FindConditions} from 'typeorm/find-options/FindConditions';
-import {Task} from '../tasks/entities/task.entity';
 
 @Injectable()
 export class ProjectsService {
@@ -42,14 +41,14 @@ export class ProjectsService {
     }
 
     async getAll(params?: FindConditions<Project>): Promise<Project[]> {
-        return this.projectRepository.find({...params, relations: ['users', 'tasks']});
+        return this.projectRepository.find({...params});
     }
 
     async getById(id: number): Promise<Project | undefined> {
-        return this.projectRepository.findOne({id}, {relations: ['users', 'tasks']});
+        return this.projectRepository.findOne({id});
     }
 
     async getByIds(ids: number[]): Promise<Project[]> {
-        return this.projectRepository.findByIds(ids, {relations: ['users', 'tasks']});
+        return this.projectRepository.findByIds(ids);
     }
 }

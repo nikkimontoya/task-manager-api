@@ -7,6 +7,7 @@ import {User} from '../user/entities/user.entity';
 import {TaskInput} from './models/task.input';
 import {ProjectsService} from '../projects/projects.service';
 import {Project} from '../projects/entities/project.entity';
+import {TaskRemovingResult} from './models/task-removing-result.model';
 
 @Resolver((of: unknown) => Task)
 export class TaskResolver {
@@ -36,6 +37,14 @@ export class TaskResolver {
         @Args('task', {type: () => TaskInput}) task: TaskInput
     ): Promise<TaskInterface> {
         return this.taskService.update(parseInt(id, 10), task);
+    }
+
+    @Mutation((returns) => TaskRemovingResult)
+    async removeTask(@Args('id', {type: () => ID}) id: string): Promise<TaskRemovingResult> {
+        const result = await this.taskService.deleteById(parseInt(id, 10));
+        return {
+            successful: !!result.affected
+        };
     }
 
     @ResolveField()

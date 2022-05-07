@@ -44,6 +44,10 @@ type Project {
   updatedAt: DateTime!
 }
 
+type TaskRemovingResult {
+  successful: Boolean!
+}
+
 type Query {
   login(email: String!, password: String!): Login!
   users(ids: [ID!]): [User!]!
@@ -55,6 +59,7 @@ type Mutation {
   register(data: RegisterInput!): Login!
   addTask(task: TaskInput!): Task!
   editTask(id: ID!, task: TaskInput!): Task!
+  removeTask(id: ID!): TaskRemovingResult!
 }
 
 input RegisterInput {

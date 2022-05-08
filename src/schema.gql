@@ -52,7 +52,7 @@ type Query {
   login(email: String!, password: String!): Login!
   users(ids: [ID!]): [User!]!
   tasks(ids: [ID!]): [Task!]!
-  projects(ids: [ID!]): [Project!]!
+  projects(ids: [ID!], administratorId: ID): [Project!]!
 }
 
 type Mutation {

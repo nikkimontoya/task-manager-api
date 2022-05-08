@@ -15,9 +15,16 @@ export class ProjectsResolver {
     ) {}
 
     @Query((returns) => [Project])
-    async projects(@Args('ids', {type: () => [ID], nullable: true}) ids?: number[]) {
+    async projects(
+        @Args('ids', {type: () => [ID], nullable: true}) ids?: number[],
+        @Args('administratorId', {type: () => ID, nullable: true}) administratorId?: number
+    ) {
         if (ids) {
             return this.projectService.getByIds(ids);
+        }
+
+        if (administratorId) {
+            return this.projectService.getAll({administratorId});
         }
 
         return this.projectService.getAll();

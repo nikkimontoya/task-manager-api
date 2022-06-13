@@ -23,6 +23,9 @@ export class Project extends BaseEntity {
     @Column()
     name: string;
 
+    @Column({nullable: true})
+    description: string;
+
     @OneToMany(() => Task, (task) => task.project)
     tasks: Task[];
 

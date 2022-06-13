@@ -1,20 +1,22 @@
-import {Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {Connection, Repository} from 'typeorm';
-import {Project} from './entities/project.entity';
+import {Project as ProjectModel} from './models/project.model';
+import {Project as ProjectEntity} from './entities/project.entity';
 import {InjectRepository} from '@nestjs/typeorm';
 import {CreateProjectDto} from './dto/create-project.dto';
 import {UserService} from '../user/user.service';
 import {FindConditions} from 'typeorm/find-options/FindConditions';
+import {ProjectInput} from './entities/project.input';
 
 @Injectable()
 export class ProjectsService {
     constructor(
-        @InjectRepository(Project) private readonly projectRepository: Repository<Project>,
+        @InjectRepository(ProjectEntity) private readonly projectRepository: Repository<ProjectEntity>,
         private readonly userService: UserService,
         private readonly connection: Connection
     ) {}
 
-    async create(projectDto: CreateProjectDto): Promise<Project | void> {
+    async create(projectDto: CreateProjectDto): Promise<ProjectEntity | void> {
         const users = await this.userService.getByIds([projectDto.administrator, ...projectDto.participants]);
 
         // If the user with administrator id has not been found, throw an exception
@@ -40,15 +42,25 @@ export class ProjectsService {
         return this.projectRepository.save(newProject);
     }
 
-    async getAll(params?: FindConditions<Project>): Promise<Project[]> {
+    async getAll(params?: FindConditions<ProjectEntity>): Promise<ProjectEntity[]> {
         return this.projectRepository.find({...params});
     }
 
-    async getById(id: number): Promise<Project | undefined> {
+    async getById(id: number): Promise<ProjectEntity | undefined> {
         return this.projectRepository.findOne({id});
     }
 
-    async getByIds(ids: number[]): Promise<Project[]> {
+    async getByIds(ids: number[]): Promise<ProjectEntity[]> {
         return this.projectRepository.findByIds(ids);
+    }
+
+    async update(id: number, project: ProjectInput): Promise<ProjectEntity> {
+        const updatedProject = await this.projectRepository.preload({id, ...project});
+
+        if (!updatedProject) {
+            throw new BadRequestException(`Project with id ${id} is not found`);
+        }
+
+        return this.projectRepository.save(updatedProject);
     }
 }

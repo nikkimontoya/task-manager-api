@@ -10,6 +10,9 @@ export class Project {
     @Field()
     name: string;
 
+    @Field({nullable: true})
+    description: string;
+
     @Field((type) => [Task])
     tasks: Task[];
 

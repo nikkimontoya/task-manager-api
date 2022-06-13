@@ -1,10 +1,11 @@
-import {Args, ID, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
+import {Args, ID, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {Project} from './models/project.model';
 import {Project as ProjectEntity} from './entities/project.entity';
 import {ProjectsService} from './projects.service';
 import {UserService} from '../user/user.service';
 import {User} from '../user/entities/user.entity';
 import {TasksService} from '../tasks/tasks.service';
+import {ProjectInput} from './entities/project.input';
 
 @Resolver((of: unknown) => Project)
 export class ProjectsResolver {
@@ -28,6 +29,14 @@ export class ProjectsResolver {
         }
 
         return this.projectService.getAll();
+    }
+
+    @Mutation((returns) => Project)
+    async editProject(
+        @Args('id', {type: () => ID}) id: string,
+        @Args('project', {type: () => ProjectInput}) project: ProjectInput
+    ): Promise<ProjectEntity> {
+        return this.projectService.update(parseInt(id, 10), project);
     }
 
     @ResolveField()

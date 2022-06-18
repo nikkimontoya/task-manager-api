@@ -5,7 +5,8 @@ import {ProjectsService} from './projects.service';
 import {UserService} from '../user/user.service';
 import {User} from '../user/entities/user.entity';
 import {TasksService} from '../tasks/tasks.service';
-import {ProjectInput} from './entities/project.input';
+import {EditProjectInput} from './models/edit-project.input';
+import {CreateProjectInput} from './models/create-project.input';
 
 @Resolver((of: unknown) => Project)
 export class ProjectsResolver {
@@ -32,9 +33,16 @@ export class ProjectsResolver {
     }
 
     @Mutation((returns) => Project)
+    async createProject(
+        @Args('project', {type: () => CreateProjectInput}) project: CreateProjectInput
+    ): Promise<ProjectEntity> {
+        return this.projectService.create(project);
+    }
+
+    @Mutation((returns) => Project)
     async editProject(
         @Args('id', {type: () => ID}) id: string,
-        @Args('project', {type: () => ProjectInput}) project: ProjectInput
+        @Args('project', {type: () => EditProjectInput}) project: EditProjectInput
     ): Promise<ProjectEntity> {
         return this.projectService.update(parseInt(id, 10), project);
     }

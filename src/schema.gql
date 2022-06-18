@@ -61,7 +61,8 @@ type Mutation {
   addTask(task: TaskInput!): Task!
   editTask(id: ID!, task: TaskInput!): Task!
   removeTask(id: ID!): TaskRemovingResult!
-  editProject(id: ID!, project: ProjectInput!): Project!
+  createProject(project: CreateProjectInput!): Project!
+  editProject(id: ID!, project: EditProjectInput!): Project!
 }
 
 input RegisterInput {
@@ -80,7 +81,13 @@ input TaskInput {
   projectId: ID!
 }
 
-input ProjectInput {
+input CreateProjectInput {
+  name: String!
+  description: String!
+  administrator: ID!
+}
+
+input EditProjectInput {
   name: String!
   description: String!
 }

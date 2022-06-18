@@ -1,5 +1,5 @@
 export class CreateProjectDto {
     name: string;
-    administrator: number;
-    participants: number[];
+    description: string;
+    administrator: string;
 }

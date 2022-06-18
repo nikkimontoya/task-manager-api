@@ -6,37 +6,29 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {CreateProjectDto} from './dto/create-project.dto';
 import {UserService} from '../user/user.service';
 import {FindConditions} from 'typeorm/find-options/FindConditions';
-import {ProjectInput} from './entities/project.input';
+import {EditProjectInput} from './models/edit-project.input';
 
 @Injectable()
 export class ProjectsService {
     constructor(
         @InjectRepository(ProjectEntity) private readonly projectRepository: Repository<ProjectEntity>,
-        private readonly userService: UserService,
-        private readonly connection: Connection
+        private readonly userService: UserService
     ) {}
 
-    async create(projectDto: CreateProjectDto): Promise<ProjectEntity | void> {
-        const users = await this.userService.getByIds([projectDto.administrator, ...projectDto.participants]);
+    async create(projectDto: CreateProjectDto): Promise<ProjectEntity> {
+        const administrator = await this.userService.getById(parseInt(projectDto.administrator, 10));
 
         // If the user with administrator id has not been found, throw an exception
-        const administrator = users.find((user) => user.id === projectDto.administrator);
         if (!administrator) {
             throw new NotFoundException(`User with id ${projectDto.administrator} not found`);
         }
 
-        // If there is a non-existent user in participants, throw an exception
-        projectDto.participants.forEach((participant: number) => {
-            if (!users.find((user) => user.id === participant)) {
-                throw new NotFoundException(`User with id ${participant} not found`);
-            }
-        });
-
         // Administrator goes in both administrator and users fields
         const newProject = await this.projectRepository.create({
             name: projectDto.name,
+            description: projectDto.description,
             administrator,
-            users
+            users: [administrator]
         });
 
         return this.projectRepository.save(newProject);
@@ -54,7 +46,7 @@ export class ProjectsService {
         return this.projectRepository.findByIds(ids);
     }
 
-    async update(id: number, project: ProjectInput): Promise<ProjectEntity> {
+    async update(id: number, project: EditProjectInput): Promise<ProjectEntity> {
         const updatedProject = await this.projectRepository.preload({id, ...project});
 
         if (!updatedProject) {

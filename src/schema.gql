@@ -63,6 +63,7 @@ type Mutation {
   removeTask(id: ID!): TaskRemovingResult!
   createProject(project: CreateProjectInput!): Project!
   editProject(id: ID!, project: EditProjectInput!): Project!
+  addParticipants(id: ID!, participantsIds: [ID!]!): Project!
 }
 
 input RegisterInput {

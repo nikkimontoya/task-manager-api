@@ -55,4 +55,16 @@ export class ProjectsService {
 
         return this.projectRepository.save(updatedProject);
     }
+
+    async addParticipants(id: number, participantsIds: number[]): Promise<ProjectEntity> {
+        const project = await this.projectRepository.preload({id});
+
+        if (!project) {
+            throw new BadRequestException(`Project with id ${id} is not found`);
+        }
+
+        project.userIds.push(...participantsIds);
+
+        return this.projectRepository.save(project);
+    }
 }

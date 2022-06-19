@@ -47,6 +47,17 @@ export class ProjectsResolver {
         return this.projectService.update(parseInt(id, 10), project);
     }
 
+    @Mutation((returns) => Project)
+    async addParticipants(
+        @Args('id', {type: () => ID}) id: string,
+        @Args('participantsIds', {type: () => [ID]}) participantsIds: string[]
+    ): Promise<ProjectEntity> {
+        return this.projectService.addParticipants(
+            parseInt(id, 10),
+            participantsIds.map((pid) => parseInt(pid, 10))
+        );
+    }
+
     @ResolveField()
     async administrator(@Parent() project: ProjectEntity): Promise<User | undefined> {
         return this.userService.getById(project.administratorId);
